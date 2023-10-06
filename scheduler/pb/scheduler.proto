@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package brunowang.srvtools.scheduler;
+
+option go_package = "github.com/brunowang/srvtools/scheduler";
+
+service SchedulerService {
+  rpc StartSchedule(StartScheduleReq) returns (StartScheduleRsp);
+  rpc CancelSchedule(CancelScheduleReq) returns (Empty);
+  rpc RefreshScheduleTime(RefreshScheduleTimeReq) returns (Empty);
+  rpc GetReadySchedule(GetReadyScheduleReq) returns (GetReadyScheduleRsp);
+  rpc GetScheduleTime(GetScheduleTimeReq) returns (GetScheduleTimeRsp);
+  rpc CreateSchedulePlan(CreateSchedulePlanReq) returns (CreateSchedulePlanRsp);
+}
+
+message StartScheduleReq {
+  ScheduleItem item = 1;
+}
+
+message StartScheduleRsp {
+  int64 item_id = 1;
+}
+
+message CancelScheduleReq {
+  int64 item_id = 1;
+}
+
+message RefreshScheduleTimeReq {
+  int64 item_id = 1;
+}
+
+message GetReadyScheduleReq {
+  string bucket = 1;
+  string plan_id = 2;
+  int64 time = 3;
+  int32 count = 4;
+}
+
+message GetReadyScheduleRsp {
+  repeated ScheduleItem schedules = 1;
+}
+
+message GetScheduleTimeReq {
+  int64 item_id = 1;
+  string plan_id = 2;
+}
+
+message GetScheduleTimeRsp {
+  int64 time = 1;
+}
+
+message CreateSchedulePlanReq {
+  SchedulePlan plan = 1;
+}
+
+message CreateSchedulePlanRsp {
+  string plan_id = 1;
+}
+
+message ScheduleItem {
+  int64 item_id = 1;
+  string plan_id = 2;
+  repeated string params = 3;
+}
+
+message SchedulePlan {
+  string plan_id = 1;
+  string hook_url = 2;
+  string payload = 3;
+  int32 interval = 4;
+  int32 loop_cnt = 5;
+}
+
+message Empty {}
