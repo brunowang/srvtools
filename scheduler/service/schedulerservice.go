@@ -18,7 +18,9 @@ type SchedulerServiceService interface {
 
 	GetScheduleTime(ctx context.Context, req *dto.GetScheduleTimeReq) (*dto.GetScheduleTimeRsp, error)
 
-	CreateSchedulePlan(ctx context.Context, req *dto.CreateSchedulePlanReq) (*dto.CreateSchedulePlanRsp, error)
+	SetSchedulePlan(ctx context.Context, req *dto.SetSchedulePlanReq) (*dto.SetSchedulePlanRsp, error)
+
+	GetSchedulePlan(ctx context.Context, req *dto.GetSchedulePlanReq) (*dto.GetSchedulePlanRsp, error)
 }
 
 type SchedulerServiceServiceImpl struct{}
@@ -47,6 +49,10 @@ func (s *SchedulerServiceServiceImpl) GetScheduleTime(ctx context.Context, req *
 	return new(dto.GetScheduleTimeRsp), nil
 }
 
-func (s *SchedulerServiceServiceImpl) CreateSchedulePlan(ctx context.Context, req *dto.CreateSchedulePlanReq) (*dto.CreateSchedulePlanRsp, error) {
-	return new(dto.CreateSchedulePlanRsp), nil
+func (s *SchedulerServiceServiceImpl) SetSchedulePlan(ctx context.Context, req *dto.SetSchedulePlanReq) (*dto.SetSchedulePlanRsp, error) {
+	return new(dto.SetSchedulePlanRsp), nil
+}
+
+func (s *SchedulerServiceServiceImpl) GetSchedulePlan(ctx context.Context, req *dto.GetSchedulePlanReq) (*dto.GetSchedulePlanRsp, error) {
+	return new(dto.GetSchedulePlanRsp), nil
 }

@@ -3,12 +3,16 @@ package frontend
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the protoc-gen-go-gframe package it is being compiled against.
 import (
+	"encoding/json"
 	"github.com/brunowang/gframe/gfhttp"
 	"github.com/brunowang/gframe/gflog"
 	"github.com/brunowang/srvtools/scheduler/dto"
 	"github.com/brunowang/srvtools/scheduler/service"
 	"github.com/gin-gonic/gin"
+	ws "github.com/gorilla/websocket"
 	"go.uber.org/zap"
+	"net/http"
+	"sync"
 	"time"
 )
 
@@ -120,22 +124,42 @@ func (s *httpHandler) GetScheduleTime(ctx *gin.Context) {
 	gfhttp.NewResp(ctx).OK(rsp.ToPb())
 }
 
-func (s *httpHandler) CreateSchedulePlan(ctx *gin.Context) {
-	var req dto.CreateSchedulePlanReq
+func (s *httpHandler) SetSchedulePlan(ctx *gin.Context) {
+	var req dto.SetSchedulePlanReq
 	if !gfhttp.BindJson(ctx, &req) {
 		return
 	}
 
-	gflog.Info(ctx, "httpHandler CreateSchedulePlan processing")
+	gflog.Info(ctx, "httpHandler SetSchedulePlan processing")
 	nowt := time.Now()
 
-	rsp, err := s.svc.CreateSchedulePlan(ctx, &req)
+	rsp, err := s.svc.SetSchedulePlan(ctx, &req)
 	if err != nil {
-		gflog.Error(ctx, "httpHandler CreateSchedulePlan error", zap.Error(err))
+		gflog.Error(ctx, "httpHandler SetSchedulePlan error", zap.Error(err))
 		gfhttp.NewResp(ctx).Err(err)
 		return
 	}
-	gflog.Info(ctx, "httpHandler CreateSchedulePlan finished", zap.Duration("latency", time.Since(nowt)))
+	gflog.Info(ctx, "httpHandler SetSchedulePlan finished", zap.Duration("latency", time.Since(nowt)))
+
+	gfhttp.NewResp(ctx).OK(rsp.ToPb())
+}
+
+func (s *httpHandler) GetSchedulePlan(ctx *gin.Context) {
+	var req dto.GetSchedulePlanReq
+	if !gfhttp.BindJson(ctx, &req) {
+		return
+	}
+
+	gflog.Info(ctx, "httpHandler GetSchedulePlan processing")
+	nowt := time.Now()
+
+	rsp, err := s.svc.GetSchedulePlan(ctx, &req)
+	if err != nil {
+		gflog.Error(ctx, "httpHandler GetSchedulePlan error", zap.Error(err))
+		gfhttp.NewResp(ctx).Err(err)
+		return
+	}
+	gflog.Info(ctx, "httpHandler GetSchedulePlan finished", zap.Duration("latency", time.Since(nowt)))
 
 	gfhttp.NewResp(ctx).OK(rsp.ToPb())
 }

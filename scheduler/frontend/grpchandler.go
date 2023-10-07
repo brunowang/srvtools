@@ -5,10 +5,11 @@ package frontend
 import (
 	"context"
 	"github.com/brunowang/gframe/gflog"
+	"github.com/brunowang/srvtools/scheduler"
 	"github.com/brunowang/srvtools/scheduler/dto"
-	scheduler "github.com/brunowang/srvtools/scheduler/pb"
 	"github.com/brunowang/srvtools/scheduler/service"
 	"go.uber.org/zap"
+	"io"
 	"time"
 )
 
@@ -106,16 +107,33 @@ func (g *grpcHandler) GetScheduleTime(ctx context.Context, req *scheduler.GetSch
 	return result.ToPb(), nil
 }
 
-func (g *grpcHandler) CreateSchedulePlan(ctx context.Context, req *scheduler.CreateSchedulePlanReq) (*scheduler.CreateSchedulePlanRsp, error) {
-	params := &dto.CreateSchedulePlanReq{}
+func (g *grpcHandler) SetSchedulePlan(ctx context.Context, req *scheduler.SetSchedulePlanReq) (*scheduler.SetSchedulePlanRsp, error) {
+	params := &dto.SetSchedulePlanReq{}
 	params.Fill(req)
 
-	gflog.Info(ctx, "grpcHandler CreateSchedulePlan processing")
+	gflog.Info(ctx, "grpcHandler SetSchedulePlan processing")
 	nowt := time.Now()
 
-	result, err := g.svc.CreateSchedulePlan(ctx, params)
+	result, err := g.svc.SetSchedulePlan(ctx, params)
 	if err != nil {
-		gflog.Error(ctx, "grpcHandler CreateSchedulePlan error", zap.Error(err))
+		gflog.Error(ctx, "grpcHandler SetSchedulePlan error", zap.Error(err))
+		return nil, err
+	}
+	gflog.Info(ctx, "grpcHandler logical processing finished", zap.Duration("latency", time.Since(nowt)))
+
+	return result.ToPb(), nil
+}
+
+func (g *grpcHandler) GetSchedulePlan(ctx context.Context, req *scheduler.GetSchedulePlanReq) (*scheduler.GetSchedulePlanRsp, error) {
+	params := &dto.GetSchedulePlanReq{}
+	params.Fill(req)
+
+	gflog.Info(ctx, "grpcHandler GetSchedulePlan processing")
+	nowt := time.Now()
+
+	result, err := g.svc.GetSchedulePlan(ctx, params)
+	if err != nil {
+		gflog.Error(ctx, "grpcHandler GetSchedulePlan error", zap.Error(err))
 		return nil, err
 	}
 	gflog.Info(ctx, "grpcHandler logical processing finished", zap.Duration("latency", time.Since(nowt)))

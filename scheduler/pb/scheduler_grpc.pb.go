@@ -23,7 +23,8 @@ type SchedulerServiceClient interface {
 	RefreshScheduleTime(ctx context.Context, in *RefreshScheduleTimeReq, opts ...grpc.CallOption) (*Empty, error)
 	GetReadySchedule(ctx context.Context, in *GetReadyScheduleReq, opts ...grpc.CallOption) (*GetReadyScheduleRsp, error)
 	GetScheduleTime(ctx context.Context, in *GetScheduleTimeReq, opts ...grpc.CallOption) (*GetScheduleTimeRsp, error)
-	CreateSchedulePlan(ctx context.Context, in *CreateSchedulePlanReq, opts ...grpc.CallOption) (*CreateSchedulePlanRsp, error)
+	SetSchedulePlan(ctx context.Context, in *SetSchedulePlanReq, opts ...grpc.CallOption) (*SetSchedulePlanRsp, error)
+	GetSchedulePlan(ctx context.Context, in *GetSchedulePlanReq, opts ...grpc.CallOption) (*GetSchedulePlanRsp, error)
 }
 
 type schedulerServiceClient struct {
@@ -79,9 +80,18 @@ func (c *schedulerServiceClient) GetScheduleTime(ctx context.Context, in *GetSch
 	return out, nil
 }
 
-func (c *schedulerServiceClient) CreateSchedulePlan(ctx context.Context, in *CreateSchedulePlanReq, opts ...grpc.CallOption) (*CreateSchedulePlanRsp, error) {
-	out := new(CreateSchedulePlanRsp)
-	err := c.cc.Invoke(ctx, "/brunowang.srvtools.scheduler.SchedulerService/CreateSchedulePlan", in, out, opts...)
+func (c *schedulerServiceClient) SetSchedulePlan(ctx context.Context, in *SetSchedulePlanReq, opts ...grpc.CallOption) (*SetSchedulePlanRsp, error) {
+	out := new(SetSchedulePlanRsp)
+	err := c.cc.Invoke(ctx, "/brunowang.srvtools.scheduler.SchedulerService/SetSchedulePlan", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *schedulerServiceClient) GetSchedulePlan(ctx context.Context, in *GetSchedulePlanReq, opts ...grpc.CallOption) (*GetSchedulePlanRsp, error) {
+	out := new(GetSchedulePlanRsp)
+	err := c.cc.Invoke(ctx, "/brunowang.srvtools.scheduler.SchedulerService/GetSchedulePlan", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +107,8 @@ type SchedulerServiceServer interface {
 	RefreshScheduleTime(context.Context, *RefreshScheduleTimeReq) (*Empty, error)
 	GetReadySchedule(context.Context, *GetReadyScheduleReq) (*GetReadyScheduleRsp, error)
 	GetScheduleTime(context.Context, *GetScheduleTimeReq) (*GetScheduleTimeRsp, error)
-	CreateSchedulePlan(context.Context, *CreateSchedulePlanReq) (*CreateSchedulePlanRsp, error)
+	SetSchedulePlan(context.Context, *SetSchedulePlanReq) (*SetSchedulePlanRsp, error)
+	GetSchedulePlan(context.Context, *GetSchedulePlanReq) (*GetSchedulePlanRsp, error)
 	mustEmbedUnimplementedSchedulerServiceServer()
 }
 
@@ -120,8 +131,11 @@ func (UnimplementedSchedulerServiceServer) GetReadySchedule(context.Context, *Ge
 func (UnimplementedSchedulerServiceServer) GetScheduleTime(context.Context, *GetScheduleTimeReq) (*GetScheduleTimeRsp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetScheduleTime not implemented")
 }
-func (UnimplementedSchedulerServiceServer) CreateSchedulePlan(context.Context, *CreateSchedulePlanReq) (*CreateSchedulePlanRsp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateSchedulePlan not implemented")
+func (UnimplementedSchedulerServiceServer) SetSchedulePlan(context.Context, *SetSchedulePlanReq) (*SetSchedulePlanRsp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetSchedulePlan not implemented")
+}
+func (UnimplementedSchedulerServiceServer) GetSchedulePlan(context.Context, *GetSchedulePlanReq) (*GetSchedulePlanRsp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSchedulePlan not implemented")
 }
 func (UnimplementedSchedulerServiceServer) mustEmbedUnimplementedSchedulerServiceServer() {}
 
@@ -226,20 +240,38 @@ func _SchedulerService_GetScheduleTime_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _SchedulerService_CreateSchedulePlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateSchedulePlanReq)
+func _SchedulerService_SetSchedulePlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetSchedulePlanReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SchedulerServiceServer).CreateSchedulePlan(ctx, in)
+		return srv.(SchedulerServiceServer).SetSchedulePlan(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/brunowang.srvtools.scheduler.SchedulerService/CreateSchedulePlan",
+		FullMethod: "/brunowang.srvtools.scheduler.SchedulerService/SetSchedulePlan",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SchedulerServiceServer).CreateSchedulePlan(ctx, req.(*CreateSchedulePlanReq))
+		return srv.(SchedulerServiceServer).SetSchedulePlan(ctx, req.(*SetSchedulePlanReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SchedulerService_GetSchedulePlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSchedulePlanReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SchedulerServiceServer).GetSchedulePlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/brunowang.srvtools.scheduler.SchedulerService/GetSchedulePlan",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SchedulerServiceServer).GetSchedulePlan(ctx, req.(*GetSchedulePlanReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -272,8 +304,12 @@ var SchedulerService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _SchedulerService_GetScheduleTime_Handler,
 		},
 		{
-			MethodName: "CreateSchedulePlan",
-			Handler:    _SchedulerService_CreateSchedulePlan_Handler,
+			MethodName: "SetSchedulePlan",
+			Handler:    _SchedulerService_SetSchedulePlan_Handler,
+		},
+		{
+			MethodName: "GetSchedulePlan",
+			Handler:    _SchedulerService_GetSchedulePlan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

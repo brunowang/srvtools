@@ -3,7 +3,7 @@ package dto
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the protoc-gen-go-gframe package it is being compiled against.
 import (
-	scheduler "github.com/brunowang/srvtools/scheduler/pb"
+	"github.com/brunowang/srvtools/scheduler"
 	"github.com/golang/protobuf/jsonpb"
 )
 
@@ -175,11 +175,11 @@ func (m *GetScheduleTimeRsp) ToJson() []byte {
 	return []byte(js)
 }
 
-type CreateSchedulePlanReq struct {
-	scheduler.CreateSchedulePlanReq `json:",inline"`
+type SetSchedulePlanReq struct {
+	scheduler.SetSchedulePlanReq `json:",inline"`
 }
 
-func (m *CreateSchedulePlanReq) IsValid() bool {
+func (m *SetSchedulePlanReq) IsValid() bool {
 
 	if m.GetPlan() == nil {
 		return false
@@ -188,25 +188,61 @@ func (m *CreateSchedulePlanReq) IsValid() bool {
 	return true
 }
 
-func (m *CreateSchedulePlanReq) Fill(pb *scheduler.CreateSchedulePlanReq) {
+func (m *SetSchedulePlanReq) Fill(pb *scheduler.SetSchedulePlanReq) {
 	if pb == nil {
 		return
 	}
-	m.CreateSchedulePlanReq = *pb
+	m.SetSchedulePlanReq = *pb
 	return
 }
 
-type CreateSchedulePlanRsp struct {
-	scheduler.CreateSchedulePlanRsp `json:",inline"`
+type SetSchedulePlanRsp struct {
+	scheduler.SetSchedulePlanRsp `json:",inline"`
 
 	Err error `json:"err"`
 }
 
-func (m *CreateSchedulePlanRsp) ToPb() *scheduler.CreateSchedulePlanRsp {
-	return &m.CreateSchedulePlanRsp
+func (m *SetSchedulePlanRsp) ToPb() *scheduler.SetSchedulePlanRsp {
+	return &m.SetSchedulePlanRsp
 }
 
-func (m *CreateSchedulePlanRsp) ToJson() []byte {
+func (m *SetSchedulePlanRsp) ToJson() []byte {
+	js, _ := jspb.MarshalToString(m)
+	return []byte(js)
+}
+
+type GetSchedulePlanReq struct {
+	scheduler.GetSchedulePlanReq `json:",inline"`
+}
+
+func (m *GetSchedulePlanReq) IsValid() bool {
+
+	if m.GetPlanId() == "" {
+		return false
+	}
+
+	return true
+}
+
+func (m *GetSchedulePlanReq) Fill(pb *scheduler.GetSchedulePlanReq) {
+	if pb == nil {
+		return
+	}
+	m.GetSchedulePlanReq = *pb
+	return
+}
+
+type GetSchedulePlanRsp struct {
+	scheduler.GetSchedulePlanRsp `json:",inline"`
+
+	Err error `json:"err"`
+}
+
+func (m *GetSchedulePlanRsp) ToPb() *scheduler.GetSchedulePlanRsp {
+	return &m.GetSchedulePlanRsp
+}
+
+func (m *GetSchedulePlanRsp) ToJson() []byte {
 	js, _ := jspb.MarshalToString(m)
 	return []byte(js)
 }

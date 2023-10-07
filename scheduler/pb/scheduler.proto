@@ -10,7 +10,8 @@ service SchedulerService {
   rpc RefreshScheduleTime(RefreshScheduleTimeReq) returns (Empty);
   rpc GetReadySchedule(GetReadyScheduleReq) returns (GetReadyScheduleRsp);
   rpc GetScheduleTime(GetScheduleTimeReq) returns (GetScheduleTimeRsp);
-  rpc CreateSchedulePlan(CreateSchedulePlanReq) returns (CreateSchedulePlanRsp);
+  rpc SetSchedulePlan(SetSchedulePlanReq) returns (SetSchedulePlanRsp);
+  rpc GetSchedulePlan(GetSchedulePlanReq) returns (GetSchedulePlanRsp);
 }
 
 message StartScheduleReq {
@@ -49,12 +50,20 @@ message GetScheduleTimeRsp {
   int64 time = 1;
 }
 
-message CreateSchedulePlanReq {
+message SetSchedulePlanReq {
   SchedulePlan plan = 1;
 }
 
-message CreateSchedulePlanRsp {
+message SetSchedulePlanRsp {
   string plan_id = 1;
+}
+
+message GetSchedulePlanReq {
+  string plan_id = 1;
+}
+
+message GetSchedulePlanRsp {
+  SchedulePlan plan = 1;
 }
 
 message ScheduleItem {

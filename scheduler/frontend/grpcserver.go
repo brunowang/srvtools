@@ -4,7 +4,7 @@ package frontend
 // is compatible with the protoc-gen-go-gframe package it is being compiled against.
 import (
 	"github.com/brunowang/gframe/gflog"
-	scheduler "github.com/brunowang/srvtools/scheduler/pb"
+	"github.com/brunowang/srvtools/scheduler"
 	"github.com/brunowang/srvtools/scheduler/service"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"go.uber.org/zap"

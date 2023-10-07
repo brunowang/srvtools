@@ -27,6 +27,14 @@ func (s *httpServer) Serve(httpl net.Listener) error {
 	router.Use(gin.Recovery())
 	router.Use(gflog.TraceMiddleware())
 
+	router.POST("/api/scheduler/start_schedule", s.h.StartSchedule)
+	router.POST("/api/scheduler/cancel_schedule", s.h.CancelSchedule)
+	router.POST("/api/scheduler/refresh_schedule_time", s.h.RefreshScheduleTime)
+	router.GET("/api/scheduler/get_ready_schedule", s.h.GetReadySchedule)
+	router.GET("/api/scheduler/get_schedule_time", s.h.GetScheduleTime)
+	router.POST("/api/scheduler/set_schedule_plan", s.h.SetSchedulePlan)
+	router.GET("/api/scheduler/get_schedule_plan", s.h.GetSchedulePlan)
+
 	gflog.Info(nil, "Http start listen", zap.String("address", httpl.Addr().String()))
 
 	return router.RunListener(httpl)
